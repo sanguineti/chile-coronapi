@@ -32,7 +32,7 @@ def get_national_data():
 
     data = []
     with open("coronapi/data/national_temp.csv") as csv_file:
-        csv_reader = csv.DictReader(csv_file, delimiter=",")
+        csv_reader = csv.DictReader(csv_file, delimiter=" ")
         for row in csv_reader:
             data.append(
                 {

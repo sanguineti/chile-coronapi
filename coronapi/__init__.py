@@ -18,9 +18,9 @@ def create_app(test_config=None):
     app.register_blueprint(api.bp)
 
     get_regional_data()
-    get_national_data()
+    # get_national_data()
     sched = BackgroundScheduler(daemon=True)
-    sched.add_job(get_regional_data, "interval", minutes=60)
+    # sched.add_job(get_regional_data, "interval", minutes=60)
     sched.add_job(get_national_data, "interval", minutes=60)
     sched.start()
 

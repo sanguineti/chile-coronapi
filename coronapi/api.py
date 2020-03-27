@@ -6,8 +6,8 @@ from .constants import (
     NOT_FOUND_ERROR,
     REGIONAL_PATH,
     LATEST_NATIONAL_PATH,
-    HISTORICAL_NATIONAL_PATH,
     NOVEL_COVID_ENDPOINT,
+    # HISTORICAL_NATIONAL_PATH,
 )
 
 bp = Blueprint("api", __name__, url_prefix="/api")
@@ -39,8 +39,8 @@ def national_latest():
     return json.loads(data.text)
 
 
-@bp.route(HISTORICAL_NATIONAL_PATH, methods=["GET"])
-def national_historical():
-    with open("coronapi/data/national.json") as json_file:
-        data = json.load(json_file)
-        return json.dumps(data, ensure_ascii=False)
+# @bp.route(HISTORICAL_NATIONAL_PATH, methods=["GET"])
+# def national_historical():
+#     with open("coronapi/data/national.json") as json_file:
+#         data = json.load(json_file)
+#         return json.dumps(data, ensure_ascii=False)
