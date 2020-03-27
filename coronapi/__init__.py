@@ -25,3 +25,6 @@ def create_app(test_config=None):
     sched.start()
 
     return app
+
+
+app = create_app()
