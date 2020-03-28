@@ -9,6 +9,7 @@ from .constants import (
     NOVEL_COVID_ENDPOINT,
     # HISTORICAL_NATIONAL_PATH,
 )
+from coronapi.helpers.get_regional_data import get_regional_data
 
 bp = Blueprint("api", __name__, url_prefix="/api")
 
@@ -20,17 +21,16 @@ def resource_not_found(e):
 
 @bp.route(REGIONAL_PATH, methods=["GET"])
 def regions():
-    with open("coronapi/data/regional.json") as json_file:
-        data = json.load(json_file)
-        if "id" in request.args:
-            id = int(request.args["id"])
-            if id not in range(1, 17):
-                return abort(404, description=NOT_FOUND_ERROR,)
-            for val in data:
-                if val["regionInfo"]["_id"] == id:
-                    return json.dumps(val, ensure_ascii=False)
+    data = get_regional_data()
+    if "id" in request.args:
+        id = int(request.args["id"])
+        if id not in range(1, 17):
+            return abort(404, description=NOT_FOUND_ERROR,)
+        for val in data:
+            if val["regionInfo"]["_id"] == id:
+                return json.dumps(val, ensure_ascii=False)
 
-        return json.dumps(data, ensure_ascii=False)
+    return json.dumps(data, ensure_ascii=False)
 
 
 @bp.route(LATEST_NATIONAL_PATH, methods=["GET"])
