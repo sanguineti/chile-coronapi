@@ -1,0 +1,16 @@
+from setuptools import find_packages, setup
+from dotenv import load_dotenv
+
+
+setup(
+    name="coronapi",
+    version="1.0.0",
+    packages=find_packages(),
+    include_package_data=True,
+    zip_safe=False,
+    install_requires=["flask", "apscheduler", "python-dotenv"],
+)
+
+SECRET_KEY = "dev"  # generalte
+
+load_dotenv()
