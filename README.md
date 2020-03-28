@@ -3,7 +3,7 @@
 API para obtener datos acerca de contagios de coronavirus (COVID-19) en Chile.
 
 # Sobre el uso de la API
-Esta API es abierta y puede ser utilizada en cualquier proyecto. Se solicita que, en caso de utilizarla, me contactes por [Telegram](https://t.me/fsanguineti) para poder linkear el proyecto a este repositorio y llevar un mejor manejo de en dónde se está utilizando. 
+Esta API es abierta y puede ser utilizada en cualquier proyecto. Se solicita que, en caso de utilizarla, me contactes por [Telegram](https://t.me/fsanguineti) para poder linkear el proyecto a este repositorio y llevar un mejor manejo de en dónde se está utilizando. También me puedes enviar un [email](mailto:franco.sanguineti@ug.uchile.cl)
 
 # Colaboraciones
 Cualquier persona es libre de colaborar con este proyecto. Simplemente se debe hacer un fork, añadir la característica y hacer un Pull Request bien documentado de lo que se quiere añadir. Se agradece contactarme por [Telegram](https://t.me/fsanguineti) en este caso.
