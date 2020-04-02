@@ -177,7 +177,7 @@ dmypy.json
 .DS_Store
 # private keys
 .env 
-setup.py.template
+setup.py
 MANIFEST.in
 
 ### PyCharm ###
