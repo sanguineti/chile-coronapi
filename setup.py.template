@@ -11,6 +11,6 @@ setup(
     install_requires=["flask", "apscheduler", "python-dotenv"],
 )
 
-SECRET_KEY = "dev"  # generalte
+SECRET_KEY = "dev"  # generate
 
 load_dotenv()
