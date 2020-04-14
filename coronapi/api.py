@@ -47,6 +47,14 @@ def v3_historical_regions():
 
 @bp.route(V3_HISTORICAL_COMMUNE_PATH, methods=["GET"])
 def v3_historical_communes():
+    data = get_communes_data()
+    if "id" in request.args:
+        id = int(request.args["id"])
+        try:
+            return json.dumps(data[id], ensure_ascii=False)
+        except KeyError:
+            return abort(404, description=NOT_FOUND_ERROR)
+
     return json.dumps(get_communes_data(), ensure_ascii=False)
 
 
