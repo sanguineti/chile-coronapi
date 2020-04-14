@@ -1,28 +1,17 @@
-# Errors
+# Constants of the project
+
 NOT_FOUND_ERROR = "Region not found. Please enter a value between 1 and 16."
-
-# URLs
-NATIONAL_URL = "https://raw.githubusercontent.com/jorgeperezrojas/covid19-data/master/csv/resumen_nacional.csv"
-REGIONAL_CONFIRMED_URL = "https://raw.githubusercontent.com/jorgeperezrojas/covid19-data/master/csv/confirmados.csv"
-REGIONAL_DEATHS_URL = "https://raw.githubusercontent.com/jorgeperezrojas/covid19-data/master/csv/muertes.csv"
-COMMUNES_URL = "https://raw.githubusercontent.com/jorgeperezrojas/covid19-data/master/csv/confirmados_comunas.csv"
-
-# Historical Paths
-V3_HISTORICAL_NATIONAL_PATH = "v3/historical/nation"
-V3_HISTORICAL_REGION_PATH = "v3/historical/regions"
-V3_HISTORICAL_COMMUNE_PATH = "v3/historical/communes"
-
-# Latest Paths
-V3_LATEST_NATIONAL_PATH = "v3/latest/nation"
-V3_LATEST_REGIONAL_PATH = "v3/latest/regions"
-V3_LATEST_COMMUNES_PATH = "v3/latest/communes"
-
-# Models Paths
-V3_REGIONS = "v3/models/regions"
-V3_COMMUNES = "v3/models/communes"
-
-# Project
+NATIONAL_URL = "https://api.datawrapper.de/v3/charts/UQgEt/assets/UQgEt.csv"
+REGIONAL_URL = "https://api.datawrapper.de/v3/charts/RXfoi/assets/RXfoi.csv"
+HISTORICAL_NATIONAL_PATH = "v1/historical/national"
+LATEST_NATIONAL_PATH = "v1/latest/national"
+V2_LATEST_NATIONAL_PATH = "v2/latest/national"
+REGIONAL_PATH = "v1/latest/regions"
+V2_REGIONAL_PATH = "v2/latest/regions"
 DATA_FOLDER = "coronapi/data"
-
-# Chile
-INE_CHILEAN_HABITANTS = 18751405
+NOVEL_COVID_ENDPOINT = "https://corona.lmao.ninja/countries/chile"
+GOV_PAGE_URL = "https://www.minsal.cl/nuevo-coronavirus-2019-ncov/casos-confirmados-en-chile-covid-19/"
+CHILEAN_FLAG = (
+    "https://raw.githubusercontent.com/NovelCOVID/API/master/assets/flags/cl.png"
+)
+INE_CHILEAN_HABITANTS = 19107216
