@@ -1,13 +1,12 @@
-from coronapi.constants import INE_CHILEAN_HABITANTS
+import json
+
+from coronapi.constants import DATA_FOLDER
 
 
-def _per_million(number):
-    return round(number * 1000000 / INE_CHILEAN_HABITANTS, 1)
+def per_100k(quantity, population):
+    return round(100000 * quantity / population, 2)
 
 
-def get_per_one_million(confirmed, deaths):
-    return (_per_million(confirmed), _per_million(deaths))
-
-
-def undotter(string_number):
-    return int(string_number.replace(".", ""))
+def get_regional_template():
+    with open("{}/regional_template.json".format(DATA_FOLDER)) as json_file:
+        return json.load(json_file)

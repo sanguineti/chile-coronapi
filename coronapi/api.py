@@ -1,17 +1,22 @@
-import requests
-
 from flask import Blueprint, jsonify, json, abort, request
 
 from .constants import (
     NOT_FOUND_ERROR,
-    V2_REGIONAL_PATH,
-    REGIONAL_PATH,
-    V2_LATEST_NATIONAL_PATH,
-    LATEST_NATIONAL_PATH,
-    NOVEL_COVID_ENDPOINT,
+    V3_HISTORICAL_NATIONAL_PATH,
+    V3_HISTORICAL_REGION_PATH,
+    V3_HISTORICAL_COMMUNE_PATH,
+    V3_LATEST_NATIONAL_PATH,
+    V3_LATEST_REGIONAL_PATH,
+    V3_LATEST_COMMUNES_PATH,
+    V3_REGIONS,
+    V3_COMMUNES,
 )
-from coronapi.helpers.gov_scrapper import get_regional, get_national
-from coronapi.helpers.get_regional_data import get_regional_data
+from coronapi.helpers.get_data import (
+    get_national_data,
+    get_regional_data,
+    get_communes_data,
+    get_regional_template,
+)
 
 
 bp = Blueprint("api", __name__, url_prefix="/api")
@@ -22,41 +27,99 @@ def resource_not_found(e):
     return jsonify(error=str(e)), 404
 
 
-@bp.route(V2_REGIONAL_PATH, methods=["GET"])
-def v2_regions():
-    data = list(get_regional().values())
-    if "id" in request.args:
-        id = int(request.args["id"])
-        if id not in range(1, 17):
-            return abort(404, description=NOT_FOUND_ERROR,)
-        for val in data:
-            if val["regionInfo"]["_id"] == id:
-                return json.dumps(val, ensure_ascii=False)
-
-    return json.dumps(data, ensure_ascii=False)
+# Historical endpoints
+@bp.route(V3_HISTORICAL_NATIONAL_PATH, methods=["GET"])
+def v3_historical_national():
+    return json.dumps(get_national_data(), ensure_ascii=False)
 
 
-@bp.route(V2_LATEST_NATIONAL_PATH, methods=["GET"])
-def v2_national_latest():
-    data = get_national()
-    return json.dumps(data, ensure_ascii=False)
-
-
-@bp.route(LATEST_NATIONAL_PATH, methods=["GET"])
-def national_latest():
-    data = requests.request("GET", NOVEL_COVID_ENDPOINT)
-    return json.loads(data.text)
-
-
-@bp.route(REGIONAL_PATH, methods=["GET"])
-def v1_regions():
+@bp.route(V3_HISTORICAL_REGION_PATH, methods=["GET"])
+def v3_historical_regions():
     data = get_regional_data()
     if "id" in request.args:
         id = int(request.args["id"])
         if id not in range(1, 17):
-            return abort(404, description=NOT_FOUND_ERROR,)
-        for val in data:
-            if val["regionInfo"]["_id"] == id:
-                return json.dumps(val, ensure_ascii=False)
+            return abort(404, description=NOT_FOUND_ERROR)
+        return json.dumps(data[str(id)], ensure_ascii=False)
 
     return json.dumps(data, ensure_ascii=False)
+
+
+@bp.route(V3_HISTORICAL_COMMUNE_PATH, methods=["GET"])
+def v3_historical_communes():
+    data = get_communes_data()
+    if "id" in request.args:
+        id = int(request.args["id"])
+        try:
+            return json.dumps(data[id], ensure_ascii=False)
+        except KeyError:
+            return abort(404, description=NOT_FOUND_ERROR)
+
+    return json.dumps(get_communes_data(), ensure_ascii=False)
+
+
+# latest endpoints
+@bp.route(V3_LATEST_NATIONAL_PATH, methods=["GET"])
+def v3_national_latest():
+    data = get_national_data()
+    max_key = max(data.keys())
+
+    return json.dumps(data[max_key], ensure_ascii=False)
+
+
+@bp.route(V3_LATEST_REGIONAL_PATH, methods=["GET"])
+def v3_regional_latest():
+    data = get_regional_data()
+    for key in data:
+        max_subkey = max(data[key]["regionData"].keys())
+        data[key]["regionData"] = {max_subkey: data[key]["regionData"][max_subkey]}
+    if "id" in request.args:
+        id = int(request.args["id"])
+        if id not in range(1, 17):
+            return abort(404, description=NOT_FOUND_ERROR)
+        return json.dumps(data[str(id)], ensure_ascii=False)
+    return json.dumps(data, ensure_ascii=False)
+
+
+@bp.route(V3_LATEST_COMMUNES_PATH, methods=["GET"])
+def v3_communes_latest():
+    data = get_communes_data()
+
+    for key in data:
+        max_subkey = max(data[key]["confirmed"].keys())
+        data[key]["confirmed"] = {max_subkey: data[key]["confirmed"][max_subkey]}
+    if "id" in request.args:
+        id = int(request.args["id"])
+
+        try:
+            return json.dumps(data[id], ensure_ascii=False)
+        except KeyError:
+            return abort(404, description=NOT_FOUND_ERROR)
+
+    return json.dumps(data, ensure_ascii=False)
+
+
+# Models endpoints
+@bp.route(V3_REGIONS, methods=["GET"])
+def v3_models_regions():
+    data = get_regional_template()
+    data_dict = dict()
+    for key in data:
+        data_dict.update({key: data[key]["region"]})
+    return json.dumps(data_dict, ensure_ascii=False)
+
+
+@bp.route(V3_COMMUNES, methods=["GET"])
+def v3_models_communes():
+    data = get_communes_data()
+    data_dict = dict()
+    for key in data:
+        data_dict.update(
+            {
+                key: {
+                    "commune": data[key]["commune"],
+                    "region": data[key]["communeInfo"]["region"],
+                }
+            }
+        )
+    return json.dumps(data_dict, ensure_ascii=False)
