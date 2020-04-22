@@ -122,4 +122,7 @@ def v3_models_communes():
                 }
             }
         )
+        for attr,val in data[key]["communeInfo"].items():
+            if attr in ["population","area","hdi"]:
+                data_dict[key][attr] = val 
     return json.dumps(data_dict, ensure_ascii=False)
