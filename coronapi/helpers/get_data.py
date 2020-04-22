@@ -87,6 +87,8 @@ def get_communes_data():
         }
         for key,val in data_communes[str(commune_info["_id"])].items():
             commune_info[key] = val
+            if key == "hdi":
+                commune_info[key] = round(val,3)
         comune = element.pop("comuna")
         confirmed = copy.deepcopy(element)
 
