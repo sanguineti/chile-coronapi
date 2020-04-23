@@ -1,5 +1,6 @@
 # Errors
-NOT_FOUND_ERROR = "Region not found. Please enter a value between 1 and 16."
+NOT_FOUND_REGION_ERROR = "Region not found. Please enter a value between 1 and 16."
+NOT_FOUND_COMMUNE_ERROR = "Commune not found. Please visit https://chile-coronapi.herokuapp.com/api/v3/models/communes for more information."
 
 # URLs
 NATIONAL_URL = "https://raw.githubusercontent.com/jorgeperezrojas/covid19-data/master/csv/resumen_nacional.csv"
