@@ -10,7 +10,7 @@ from coronapi.constants import (
     COMMUNES_URL,
     INE_CHILEAN_HABITANTS,
 )
-from coronapi.helpers.utils import per_100k, get_regional_template
+from coronapi.helpers.utils import per_100k, get_regional_template, get_communal_template
 
 
 def get_regional_data():
@@ -78,12 +78,17 @@ def get_communes_data():
     parsed_response = io.StringIO(response.content.decode("utf-8"))
     data = list(csv.DictReader(parsed_response, delimiter=","))
     dict_data = dict()
+    data_communes = get_communal_template()
     for element in data:
         commune_info = {
             "region": element.pop("region"),
             "region_code": int(element.pop("codigo_region")),
             "_id": int(element.pop("codigo_comuna")),
         }
+        for key,val in data_communes[str(commune_info["_id"])].items():
+            commune_info[key] = val
+            if key == "hdi":
+                commune_info[key] = round(val,3)
         comune = element.pop("comuna")
         confirmed = copy.deepcopy(element)
 
