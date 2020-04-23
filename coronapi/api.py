@@ -106,7 +106,14 @@ def v3_models_regions():
     data = get_regional_template()
     data_dict = dict()
     for key in data:
-        data_dict.update({key: data[key]["region"]})
+        data_dict.update(
+            {
+                key: {"region": data[key]["region"]}
+            }
+        )
+        for attr, val in data[key]["regionInfo"].items():
+            if attr in ["population", "area", "lat", "long"]:
+                data_dict[key][attr] = val
     return json.dumps(data_dict, ensure_ascii=False)
 
 

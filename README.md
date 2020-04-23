@@ -36,12 +36,13 @@ Los datos son las cifras oficiales publicadas por el Gobierno de Chile y el Mini
 En general, los datos son obtenidos desde el sitio del [gobierno](https://www.gob.cl/coronavirus/cifrasoficiales/), que actualiza muchísimo más rápido que el sitio del [ministerio de salud](.cl/nuevo-coronavirus-2019-ncov/casos-confirmados-en-chile-covid-19/), a excepción de los datos respectivos a casos contagiados, que sólo se publican en el sitio del Minsal.
 
 ## Datos de Regiones
-Los datos de las regiones son obtenidos desde ()[] e incluyen datos como:
+Los datos de las regiones son obtenidos desde el sitio del [INE](https://regiones.ine.cl/) e incluyen datos como:
 - Nombre de la región
 - Información de la región como:
   - Código de  región, que corresponde al antiguo sistema de regiones numeradas(Ej. Metropolitana es 13).
   - Latitud y Longitud
   - Población de la región
+  - Área geográfica en *km²* de la región
 
 ## Datos de Comunas
 Los datos son obtenidos mayoritariamente desde el sitio de la [biblioteca del congreso nacional](http://reportescomunales.bcn.cl/2017/index.php/Categor%C3%ADa:Comunas) e incluyen:
@@ -75,9 +76,10 @@ uuid.uuid4().hex
 
 Para correr la aplicación en un servidor local, se puede hacer simplemente ejecutando `flask run` en la raíz del proyecto.
 
-# Colaboradores
+# Equipo
+* Cristóbal Mesías [@cmesiasd](https://github.com/cmesiasd). Ha trabajado principalmente en la implementación del scraping y solución de bugs de la API. 
 
-* Cristóbal Mesías [@cmesiasd](https://github.com/cmesiasd). Ha trabajado principalmente en la implementación del scraping y solución de bugs de la API.
-* Fabián Villena [@fvillena](https://github.com/fvillena). Ha agregado información por comuna, como el área geográfica y la cantidad de población de ellas. 
+# Colaboradores
+* Fabián Villena [@fvillena](https://github.com/fvillena). Ha agregado información por comuna, como el área geográfica, el indice de desarrollo humano y la cantidad de población de ellas. 
 
 
