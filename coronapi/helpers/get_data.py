@@ -43,7 +43,7 @@ def get_regional_data():
         for key in deaths_row:
             deaths = int(deaths_row[key])
             region_data[key].update(
-                {"deaths": deaths, "deaths_per_100k": per_100k(confirmed, population)}
+                {"deaths": deaths, "deaths_per_100k": per_100k(deaths, population)}
             )
 
         data[region_id]["regionData"] = region_data

@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, json, abort, request
 
 from .constants import (
-    NOT_FOUND_ERROR,
+    NOT_FOUND_REGION_ERROR,
+    NOT_FOUND_COMMUNE_ERROR,
     V3_HISTORICAL_NATIONAL_PATH,
     V3_HISTORICAL_REGION_PATH,
     V3_HISTORICAL_COMMUNE_PATH,
@@ -39,7 +40,7 @@ def v3_historical_regions():
     if "id" in request.args:
         id = int(request.args["id"])
         if id not in range(1, 17):
-            return abort(404, description=NOT_FOUND_ERROR)
+            return abort(404, description=NOT_FOUND_REGION_ERROR)
         return json.dumps(data[str(id)], ensure_ascii=False)
 
     return json.dumps(data, ensure_ascii=False)
@@ -53,7 +54,7 @@ def v3_historical_communes():
         try:
             return json.dumps(data[id], ensure_ascii=False)
         except KeyError:
-            return abort(404, description=NOT_FOUND_ERROR)
+            return abort(404, description=NOT_FOUND_COMMUNE_ERROR)
 
     return json.dumps(get_communes_data(), ensure_ascii=False)
 
@@ -76,7 +77,7 @@ def v3_regional_latest():
     if "id" in request.args:
         id = int(request.args["id"])
         if id not in range(1, 17):
-            return abort(404, description=NOT_FOUND_ERROR)
+            return abort(404, description=NOT_FOUND_REGION_ERROR)
         return json.dumps(data[str(id)], ensure_ascii=False)
     return json.dumps(data, ensure_ascii=False)
 
@@ -94,7 +95,7 @@ def v3_communes_latest():
         try:
             return json.dumps(data[id], ensure_ascii=False)
         except KeyError:
-            return abort(404, description=NOT_FOUND_ERROR)
+            return abort(404, description=NOT_FOUND_COMMUNE_ERROR)
 
     return json.dumps(data, ensure_ascii=False)
 
@@ -122,7 +123,7 @@ def v3_models_communes():
                 }
             }
         )
-        for attr,val in data[key]["communeInfo"].items():
-            if attr in ["population","area","hdi"]:
+        for attr, val in data[key]["communeInfo"].items():
+            if attr in ["population", "area", "hdi"]:
                 data_dict[key][attr] = val 
     return json.dumps(data_dict, ensure_ascii=False)
