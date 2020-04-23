@@ -176,7 +176,7 @@ dmypy.json
 
 .DS_Store
 # private keys
-.env 
+.env
 setup.py
 MANIFEST.in
 

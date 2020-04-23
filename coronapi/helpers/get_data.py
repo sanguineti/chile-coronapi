@@ -43,7 +43,7 @@ def get_regional_data():
         for key in deaths_row:
             deaths = int(deaths_row[key])
             region_data[key].update(
-                {"deaths": deaths, "deaths_per_100k": per_100k(confirmed, population)}
+                {"deaths": deaths, "deaths_per_100k": per_100k(deaths, population)}
             )
 
         data[region_id]["regionData"] = region_data
@@ -85,11 +85,11 @@ def get_communes_data():
             "region_code": int(element.pop("codigo_region")),
             "_id": int(element.pop("codigo_comuna")),
         }
-        for key,val in data_communes[str(commune_info["_id"])].items():
+        for key, val in data_communes[str(commune_info["_id"])].items():
             commune_info[key] = val
             if key == "hdi":
                 commune_info[key] = round(val,3)
-        comune = element.pop("comuna")
+        commune = element.pop("comuna")
         confirmed = copy.deepcopy(element)
 
         for key in confirmed:
@@ -102,7 +102,7 @@ def get_communes_data():
             {
                 commune_info["_id"]: {
                     "communeInfo": commune_info,
-                    "commune": comune,
+                    "commune": commune,
                     "confirmed": confirmed,
                 }
             }
