@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, json, abort, request
+from flask import Blueprint, jsonify, json, abort, request, Response
 
 from .constants import (
     NOT_FOUND_REGION_ERROR,
@@ -41,9 +41,9 @@ def v3_historical_regions():
         id = int(request.args["id"])
         if id not in range(1, 17):
             return abort(404, description=NOT_FOUND_REGION_ERROR)
-        return json.dumps(data[str(id)], ensure_ascii=False)
+        return Response(json.dumps(data[str(id)], ensure_ascii=False), content_type="application/json; charset=utf-8")
 
-    return json.dumps(data, ensure_ascii=False)
+    return Response(json.dumps(data, ensure_ascii=False), content_type="application/json; charset=utf-8")
 
 
 @bp.route(V3_HISTORICAL_COMMUNE_PATH, methods=["GET"])
@@ -52,11 +52,11 @@ def v3_historical_communes():
     if "id" in request.args:
         id = int(request.args["id"])
         try:
-            return json.dumps(data[id], ensure_ascii=False)
+            return Response(json.dumps(data[id], ensure_ascii=False), content_type="application/json; charset=utf-8")
         except KeyError:
             return abort(404, description=NOT_FOUND_COMMUNE_ERROR)
 
-    return json.dumps(get_communes_data(), ensure_ascii=False)
+    return Response(json.dumps(get_communes_data(), ensure_ascii=False), content_type="application/json; charset=utf-8")
 
 
 # latest endpoints
@@ -65,7 +65,7 @@ def v3_national_latest():
     data = get_national_data()
     max_key = max(data.keys())
 
-    return json.dumps(data[max_key], ensure_ascii=False)
+    return Response(json.dumps(data[max_key], ensure_ascii=False), content_type="application/json; charset=utf-8")
 
 
 @bp.route(V3_LATEST_REGIONAL_PATH, methods=["GET"])
@@ -78,8 +78,8 @@ def v3_regional_latest():
         id = int(request.args["id"])
         if id not in range(1, 17):
             return abort(404, description=NOT_FOUND_REGION_ERROR)
-        return json.dumps(data[str(id)], ensure_ascii=False)
-    return json.dumps(data, ensure_ascii=False)
+        return Response(json.dumps(data[str(id)], ensure_ascii=False), content_type="application/json; charset=utf-8")
+    return Response(json.dumps(data, ensure_ascii=False), content_type="application/json; charset=utf-8")
 
 
 @bp.route(V3_LATEST_COMMUNES_PATH, methods=["GET"])
@@ -93,11 +93,11 @@ def v3_communes_latest():
         id = int(request.args["id"])
 
         try:
-            return json.dumps(data[id], ensure_ascii=False)
+            return Response(json.dumps(data[id], ensure_ascii=False), content_type="application/json; charset=utf-8")
         except KeyError:
             return abort(404, description=NOT_FOUND_COMMUNE_ERROR)
 
-    return json.dumps(data, ensure_ascii=False)
+    return Response(json.dumps(data, ensure_ascii=False), content_type="application/json; charset=utf-8")
 
 
 # Models endpoints
@@ -114,7 +114,7 @@ def v3_models_regions():
         for attr, val in data[key]["regionInfo"].items():
             if attr in ["population", "area", "lat", "long"]:
                 data_dict[key][attr] = val
-    return json.dumps(data_dict, ensure_ascii=False)
+    return Response(json.dumps(data_dict, ensure_ascii=False), content_type="application/json; charset=utf-8")
 
 
 @bp.route(V3_COMMUNES, methods=["GET"])
@@ -133,4 +133,4 @@ def v3_models_communes():
         for attr, val in data[key]["communeInfo"].items():
             if attr in ["population", "area", "hdi"]:
                 data_dict[key][attr] = val 
-    return json.dumps(data_dict, ensure_ascii=False)
+    return Response(json.dumps(data_dict, ensure_ascii=False), content_type="application/json; charset=utf-8")
