@@ -31,7 +31,7 @@ def resource_not_found(e):
 # Historical endpoints
 @bp.route(V3_HISTORICAL_NATIONAL_PATH, methods=["GET"])
 def v3_historical_national():
-    return json.dumps(get_national_data(), ensure_ascii=False)
+    return Response(json.dumps(get_national_data(), ensure_ascii=False), content_type="application/json; charset=utf-8")
 
 
 @bp.route(V3_HISTORICAL_REGION_PATH, methods=["GET"])
@@ -79,6 +79,7 @@ def v3_regional_latest():
         if id not in range(1, 17):
             return abort(404, description=NOT_FOUND_REGION_ERROR)
         return Response(json.dumps(data[str(id)], ensure_ascii=False), content_type="application/json; charset=utf-8")
+
     return Response(json.dumps(data, ensure_ascii=False), content_type="application/json; charset=utf-8")
 
 
