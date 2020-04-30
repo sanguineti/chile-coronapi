@@ -59,12 +59,8 @@ def get_national_data():
         element["confirmed"] = element.pop("confirmados")
         element["day"] = element.pop("dia")
         element["deaths"] = element.pop("muertes")
-        element["recovered"] = element.pop("recuperados")
         element["confirmed_per_100k"] = per_100k(
             int(element["confirmed"]), INE_CHILEAN_HABITANTS
-        )
-        element["recovered_per_100k"] = per_100k(
-            int(element["recovered"]), INE_CHILEAN_HABITANTS
         )
         element["deaths_per_100k"] = per_100k(
             int(element["deaths"]), INE_CHILEAN_HABITANTS
@@ -88,7 +84,7 @@ def get_communes_data():
         for key, val in data_communes[str(commune_info["_id"])].items():
             commune_info[key] = val
             if key == "hdi":
-                commune_info[key] = round(val,3)
+                commune_info[key] = round(val, 3)
         commune = element.pop("comuna")
         confirmed = copy.deepcopy(element)
 
