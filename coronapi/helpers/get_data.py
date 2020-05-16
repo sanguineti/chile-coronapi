@@ -10,7 +10,11 @@ from coronapi.constants import (
     COMMUNES_URL,
     INE_CHILEAN_HABITANTS,
 )
-from coronapi.helpers.utils import per_100k, get_regional_template, get_communal_template
+from coronapi.helpers.utils import (
+    per_100k,
+    get_regional_template,
+    get_communal_template,
+)
 
 
 def get_regional_data():
@@ -92,7 +96,7 @@ def get_communes_data():
             if confirmed[key] == "-":
                 confirmed[key] = 0
             else:
-                confirmed[key] = int(confirmed[key])
+                confirmed[key] = int(confirmed[key].replace(",", "").replace(".", ""))
 
         dict_data.update(
             {

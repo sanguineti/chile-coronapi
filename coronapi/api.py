@@ -113,7 +113,7 @@ def v3_models_regions():
             }
         )
         for attr, val in data[key]["regionInfo"].items():
-            if attr in ["population", "area", "lat", "long"]:
+            if attr in ["population", "area", "lat", "long", "hdi"]:
                 data_dict[key][attr] = val
     return Response(json.dumps(data_dict, ensure_ascii=False), content_type="application/json; charset=utf-8")
 
