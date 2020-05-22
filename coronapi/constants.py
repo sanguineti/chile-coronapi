@@ -17,6 +17,7 @@ V3_HISTORICAL_COMMUNE_PATH = "v3/historical/communes"
 V3_LATEST_NATIONAL_PATH = "v3/latest/nation"
 V3_LATEST_REGIONAL_PATH = "v3/latest/regions"
 V3_LATEST_COMMUNES_PATH = "v3/latest/communes"
+V3_LATEST_COMMUNES_BY_REGION_PATH = "v3/latest/communes-by-region"
 
 # Models Paths
 V3_REGIONS = "v3/models/regions"

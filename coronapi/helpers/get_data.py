@@ -109,3 +109,42 @@ def get_communes_data():
         )
 
     return dict_data
+
+def get_communes_by_region_data(id):
+    response = requests.request("GET", COMMUNES_URL)
+    parsed_response = io.StringIO(response.content.decode("utf-8"))
+    data = list(csv.DictReader(parsed_response, delimiter=","))
+    dict_data = dict()
+    data_communes = get_communal_template()
+    for element in data:
+        region_code = int(element.pop("codigo_region"))
+        if (region_code == id):
+            commune_info = {
+                "region": element.pop("region"),
+                "region_code": region_code,
+                "_id": int(element.pop("codigo_comuna")),
+            }
+            for key, val in data_communes[str(commune_info["_id"])].items():
+                commune_info[key] = val
+                if key == "hdi":
+                    commune_info[key] = round(val, 3)
+            commune = element.pop("comuna")
+            confirmed = copy.deepcopy(element)
+
+            for key in confirmed:
+                if confirmed[key] == "-":
+                    confirmed[key] = 0
+                else:
+                    confirmed[key] = int(confirmed[key].replace(",", "").replace(".", ""))
+
+            dict_data.update(
+                {
+                    commune_info["_id"]: {
+                        "communeInfo": commune_info,
+                        "commune": commune,
+                        "confirmed": confirmed,
+                    }
+                }
+            )
+
+    return dict_data

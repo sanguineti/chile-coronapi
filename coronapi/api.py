@@ -12,12 +12,14 @@ from .constants import (
     V3_LATEST_COMMUNES_PATH,
     V3_REGIONS,
     V3_COMMUNES,
+    V3_LATEST_COMMUNES_BY_REGION_PATH,
 )
 from coronapi.helpers.get_data import (
     get_national_data,
     get_regional_data,
     get_communes_data,
     get_regional_template,
+    get_communes_by_region_data,
 )
 
 
@@ -169,3 +171,30 @@ def v3_models_communes():
         json.dumps(data_dict, ensure_ascii=False),
         content_type="application/json; charset=utf-8",
     )
+
+
+@bp.route(V3_LATEST_COMMUNES_BY_REGION_PATH, methods=["GET"])
+def v3_communes_by_region_latest():
+    if "region_id" in request.args:
+        id = int(request.args["region_id"])
+
+        data = get_communes_by_region_data(id)
+
+        for key in data:
+            max_subkey = max(data[key]["confirmed"].keys())
+            data[key]["confirmed"] = {max_subkey: data[key]["confirmed"][max_subkey]}
+        try:
+            return Response(
+                json.dumps(data, ensure_ascii=False),
+                content_type="application/json; charset=utf-8",
+            )
+        except KeyError:
+            return abort(404, description=NOT_FOUND_REGION_ERROR)
+    else:
+        data = dict()
+        for i in range(1,17):
+            data[i] = get_communes_by_region_data(i)
+        return Response(
+            json.dumps(data, ensure_ascii=False),
+            content_type="application/json; charset=utf-8",
+        )
