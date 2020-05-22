@@ -12,6 +12,7 @@ COMMUNES_URL = "https://raw.githubusercontent.com/jorgeperezrojas/covid19-data/m
 V3_HISTORICAL_NATIONAL_PATH = "v3/historical/nation"
 V3_HISTORICAL_REGION_PATH = "v3/historical/regions"
 V3_HISTORICAL_COMMUNE_PATH = "v3/historical/communes"
+V3_HISTORICAL_COMMUNES_BY_REGION_PATH = "v3/historical/communes-by-region"
 
 # Latest Paths
 V3_LATEST_NATIONAL_PATH = "v3/latest/nation"

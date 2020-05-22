@@ -13,6 +13,7 @@ from .constants import (
     V3_REGIONS,
     V3_COMMUNES,
     V3_LATEST_COMMUNES_BY_REGION_PATH,
+V3_HISTORICAL_COMMUNES_BY_REGION_PATH,
 )
 from coronapi.helpers.get_data import (
     get_national_data,
@@ -20,6 +21,7 @@ from coronapi.helpers.get_data import (
     get_communes_data,
     get_regional_template,
     get_communes_by_region_data,
+    get_commune_by_all_regions,
 )
 
 
@@ -191,9 +193,33 @@ def v3_communes_by_region_latest():
         except KeyError:
             return abort(404, description=NOT_FOUND_REGION_ERROR)
     else:
-        data = dict()
-        for i in range(1,17):
-            data[i] = get_communes_by_region_data(i)
+        data = get_commune_by_all_regions()
+        for region in data:
+            for key in data[region]:
+                max_subkey = max(data[region][key]["confirmed"].keys())
+                data[region][key]["confirmed"] = {max_subkey: data[region][key]["confirmed"][max_subkey]}
+        return Response(
+            json.dumps(data, ensure_ascii=False),
+            content_type="application/json; charset=utf-8",
+        )
+
+@bp.route(V3_HISTORICAL_COMMUNES_BY_REGION_PATH, methods=["GET"])
+def v3_communes_by_region_historical():
+    if "region_id" in request.args:
+        id = int(request.args["region_id"])
+
+        data = get_communes_by_region_data(id)
+
+
+        try:
+            return Response(
+                json.dumps(data, ensure_ascii=False),
+                content_type="application/json; charset=utf-8",
+            )
+        except KeyError:
+            return abort(404, description=NOT_FOUND_REGION_ERROR)
+    else:
+        data = get_commune_by_all_regions()
         return Response(
             json.dumps(data, ensure_ascii=False),
             content_type="application/json; charset=utf-8",
