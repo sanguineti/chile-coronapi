@@ -24,6 +24,26 @@ V3_LATEST_COMMUNES_BY_REGION_PATH = "v3/latest/communes-by-region"
 V3_REGIONS = "v3/models/regions"
 V3_COMMUNES = "v3/models/communes"
 
+##################
+#      v4        #
+##################
+
+# Historical Paths
+V4_HISTORICAL_NATIONAL_PATH = "v4/historical/nation"
+V4_HISTORICAL_REGION_PATH = "v4/historical/regions"
+V4_HISTORICAL_COMMUNE_PATH = "v4/historical/communes"
+V4_HISTORICAL_COMMUNES_BY_REGION_PATH = "v4/historical/communes-by-region"
+
+# Latest Paths
+V4_LATEST_NATIONAL_PATH = "v4/latest/nation"
+V4_LATEST_REGIONAL_PATH = "v4/latest/regions"
+V4_LATEST_COMMUNES_PATH = "v4/latest/communes"
+V4_LATEST_COMMUNES_BY_REGION_PATH = "v4/latest/communes-by-region"
+
+# Models Paths
+V4_REGIONS = "v4/models/regions"
+V4_COMMUNES = "v4/models/communes"
+
 # Project
 DATA_FOLDER = "coronapi/data"
 
