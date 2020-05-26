@@ -172,6 +172,7 @@ def v3_models_communes():
                 key: {
                     "commune": data[key]["commune"],
                     "region": data[key]["communeInfo"]["region"],
+                    "region_code": data[key]["communeInfo"]["region_code"],
                 }
             }
         )
@@ -191,9 +192,9 @@ def v3_communes_by_region_latest():
 
         data = get_commune_by_all_regions()
 
-        for key in data:
-            max_subkey = max(data[key]["confirmed"].keys())
-            data[key]["confirmed"] = {max_subkey: data[key]["confirmed"][max_subkey]}
+        for key in data[region_code]:
+            max_subkey = max(data[region_code][key]["confirmed"].keys())
+            data[region_code][key]["confirmed"] = {max_subkey: data[region_code][key]["confirmed"][max_subkey]}
         try:
             return Response(
                 json.dumps(data[region_code], ensure_ascii=False),
