@@ -14,6 +14,7 @@ from coronapi.helpers.utils import (
     per_100k,
     get_regional_template,
     get_communal_template,
+    per_million
 )
 
 
@@ -40,6 +41,7 @@ def get_regional_data():
                     key: {
                         "confirmed": confirmed,
                         "confirmed_per_100k": per_100k(confirmed, population),
+                        "confirmed_per_million": per_million(confirmed, population),
                     }
                 }
             )
@@ -47,7 +49,11 @@ def get_regional_data():
         for key in deaths_row:
             deaths = int(deaths_row[key])
             region_data[key].update(
-                {"deaths": deaths, "deaths_per_100k": per_100k(deaths, population)}
+                {
+                    "deaths": deaths,
+                    "deaths_per_100k": per_100k(deaths, population),
+                    "deaths_per_million": per_million(deaths, population),
+                }
             )
 
         data[region_id]["regionData"] = region_data
@@ -72,6 +78,7 @@ def get_national_data():
         data_dict.update({element["day"]: element})
     return data_dict
 
+#TODO eliminar el confirmed al pasar a v4 y deprecar v3
 
 def get_communes_data():
     response = requests.request("GET", COMMUNES_URL)
@@ -79,6 +86,7 @@ def get_communes_data():
     data = list(csv.DictReader(parsed_response, delimiter=","))
     dict_data = dict()
     data_communes = get_communal_template()
+
     for element in data:
         commune_info = {
             "region": element.pop("region"),
@@ -90,20 +98,29 @@ def get_communes_data():
             if key == "hdi":
                 commune_info[key] = round(val, 3)
         commune = element.pop("comuna")
-        confirmed = copy.deepcopy(element)
+        communes_confirmed = copy.deepcopy(element)
 
-        for key in confirmed:
-            if confirmed[key] == "-":
-                confirmed[key] = 0
+        commune_data = dict()
+
+        for key in communes_confirmed:
+            if communes_confirmed[key] == "-":
+                commune_data[key] = {
+                    "confirmed": 0,
+                }
+                communes_confirmed[key] = 0
             else:
-                confirmed[key] = int(confirmed[key].replace(",", "").replace(".", ""))
+                commune_data[key] = {
+                    "confirmed": int(communes_confirmed[key].replace(",", "").replace(".", "")),
+                }
+                communes_confirmed[key] = int(communes_confirmed[key].replace(",", "").replace(".", ""))
 
         dict_data.update(
             {
                 commune_info["_id"]: {
                     "communeInfo": commune_info,
                     "commune": commune,
-                    "confirmed": confirmed,
+                    "confirmed": communes_confirmed,
+                    "communeData": commune_data,
                 }
             }
         )
@@ -131,20 +148,26 @@ def get_commune_by_all_regions():
             if key == "hdi":
                 commune_info[key] = round(val, 3)
         commune = element.pop("comuna")
-        confirmed = copy.deepcopy(element)
+        communes_confirmed = copy.deepcopy(element)
 
-        for key in confirmed:
-            if confirmed[key] == "-":
-                confirmed[key] = 0
+        commune_data = dict()
+
+        for key in communes_confirmed:
+            if communes_confirmed[key] == "-":
+                commune_data[key] = {
+                    "confirmed": 0,
+                }
             else:
-                confirmed[key] = int(confirmed[key].replace(",", "").replace(".", ""))
+                commune_data[key] = {
+                    "confirmed": int(communes_confirmed[key].replace(",", "").replace(".", "")),
+                }
 
         dict_data[id_region].update(
             {
                 commune_info["_id"]: {
                     "communeInfo": commune_info,
                     "commune": commune,
-                    "confirmed": confirmed,
+                    "communeData": commune_data,
                 }
             }
         )
