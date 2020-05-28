@@ -1,6 +1,6 @@
 # Errors
-NOT_FOUND_REGION_ERROR = "Region not found. Please enter a value between 1 and 16."
-NOT_FOUND_COMMUNE_ERROR = "Commune not found. Please visit https://chile-coronapi.herokuapp.com/api/v3/models/communes for more information."
+NOT_FOUND_REGION_ERROR = "Region not found. Please visit https://chile-coronapi.herokuapp.com/api/v3/models/regions for more information."
+NOT_FOUND_COMMUNE_ERROR = "Commune not found. Please visit https://chile-coronapi.herokuapp.com/api/v4/models/communes for more information."
 
 # URLs
 NATIONAL_URL = "https://raw.githubusercontent.com/jorgeperezrojas/covid19-data/master/csv/resumen_nacional.csv"
@@ -12,13 +12,11 @@ COMMUNES_URL = "https://raw.githubusercontent.com/jorgeperezrojas/covid19-data/m
 V3_HISTORICAL_NATIONAL_PATH = "v3/historical/nation"
 V3_HISTORICAL_REGION_PATH = "v3/historical/regions"
 V3_HISTORICAL_COMMUNE_PATH = "v3/historical/communes"
-V3_HISTORICAL_COMMUNES_BY_REGION_PATH = "v3/historical/communes-by-region"
 
 # Latest Paths
 V3_LATEST_NATIONAL_PATH = "v3/latest/nation"
 V3_LATEST_REGIONAL_PATH = "v3/latest/regions"
 V3_LATEST_COMMUNES_PATH = "v3/latest/communes"
-V3_LATEST_COMMUNES_BY_REGION_PATH = "v3/latest/communes-by-region"
 
 # Models Paths
 V3_REGIONS = "v3/models/regions"
@@ -29,19 +27,12 @@ V3_COMMUNES = "v3/models/communes"
 ##################
 
 # Historical Paths
-V4_HISTORICAL_NATIONAL_PATH = "v4/historical/nation"
-V4_HISTORICAL_REGION_PATH = "v4/historical/regions"
 V4_HISTORICAL_COMMUNE_PATH = "v4/historical/communes"
-V4_HISTORICAL_COMMUNES_BY_REGION_PATH = "v4/historical/communes-by-region"
 
 # Latest Paths
-V4_LATEST_NATIONAL_PATH = "v4/latest/nation"
-V4_LATEST_REGIONAL_PATH = "v4/latest/regions"
 V4_LATEST_COMMUNES_PATH = "v4/latest/communes"
-V4_LATEST_COMMUNES_BY_REGION_PATH = "v4/latest/communes-by-region"
 
 # Models Paths
-V4_REGIONS = "v4/models/regions"
 V4_COMMUNES = "v4/models/communes"
 
 # Project

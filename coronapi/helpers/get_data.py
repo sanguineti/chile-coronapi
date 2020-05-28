@@ -66,13 +66,19 @@ def get_national_data():
     data = csv.DictReader(parsed_response, delimiter=",")
     data_dict = dict()
     for element in data:
-        element["confirmed"] = element.pop("confirmados")
+        element["confirmed"] = int(element.pop("confirmados"))
         element["day"] = element.pop("dia")
-        element["deaths"] = element.pop("muertes")
+        element["deaths"] = int(element.pop("muertes"))
         element["confirmed_per_100k"] = per_100k(
             int(element["confirmed"]), INE_CHILEAN_HABITANTS
         )
+        element["confirmed_per_million"] = per_million(
+            int(element["confirmed"]), INE_CHILEAN_HABITANTS
+        )
         element["deaths_per_100k"] = per_100k(
+            int(element["deaths"]), INE_CHILEAN_HABITANTS
+        )
+        element["deaths_per_million"] = per_million(
             int(element["deaths"]), INE_CHILEAN_HABITANTS
         )
         data_dict.update({element["day"]: element})
@@ -98,28 +104,28 @@ def get_communes_data():
             if key == "hdi":
                 commune_info[key] = round(val, 3)
         commune = element.pop("comuna")
-        communes_confirmed = copy.deepcopy(element)
+        confirmed_per_commune = copy.deepcopy(element)
 
         commune_data = dict()
 
-        for key in communes_confirmed:
-            if communes_confirmed[key] == "-":
+        for key in confirmed_per_commune:
+            if confirmed_per_commune[key] == "-":
                 commune_data[key] = {
                     "confirmed": 0,
                 }
-                communes_confirmed[key] = 0
+                confirmed_per_commune[key] = 0
             else:
                 commune_data[key] = {
-                    "confirmed": int(communes_confirmed[key].replace(",", "").replace(".", "")),
+                    "confirmed": int(confirmed_per_commune[key].replace(",", "").replace(".", "")),
                 }
-                communes_confirmed[key] = int(communes_confirmed[key].replace(",", "").replace(".", ""))
+                confirmed_per_commune[key] = int(confirmed_per_commune[key].replace(",", "").replace(".", ""))
 
         dict_data.update(
             {
                 commune_info["_id"]: {
                     "communeInfo": commune_info,
                     "commune": commune,
-                    "confirmed": communes_confirmed,
+                    "confirmed": confirmed_per_commune,
                     "communeData": commune_data,
                 }
             }
@@ -148,18 +154,18 @@ def get_commune_by_all_regions():
             if key == "hdi":
                 commune_info[key] = round(val, 3)
         commune = element.pop("comuna")
-        communes_confirmed = copy.deepcopy(element)
+        confirmed_per_commune = copy.deepcopy(element)
 
         commune_data = dict()
 
-        for key in communes_confirmed:
-            if communes_confirmed[key] == "-":
+        for key in confirmed_per_commune:
+            if confirmed_per_commune[key] == "-":
                 commune_data[key] = {
                     "confirmed": 0,
                 }
             else:
                 commune_data[key] = {
-                    "confirmed": int(communes_confirmed[key].replace(",", "").replace(".", "")),
+                    "confirmed": int(confirmed_per_commune[key].replace(",", "").replace(".", "")),
                 }
 
         dict_data[id_region].update(

@@ -67,15 +67,17 @@ def v3_historical_communes():
     if "id" in request.args:
         id = int(request.args["id"])
         try:
+            del data[id]["communeData"]
             return Response(
                 json.dumps(data[id], ensure_ascii=False),
                 content_type="application/json; charset=utf-8",
             )
         except KeyError:
             return abort(404, description=NOT_FOUND_COMMUNE_ERROR)
-
+    for key in data:
+        del data[key]["communeData"]
     return Response(
-        json.dumps(get_communes_data(), ensure_ascii=False),
+        json.dumps(data, ensure_ascii=False),
         content_type="application/json; charset=utf-8",
     )
 
