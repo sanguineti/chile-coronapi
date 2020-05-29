@@ -12,14 +12,18 @@ from .constants import (
     V3_LATEST_COMMUNES_PATH,
     V3_REGIONS,
     V3_COMMUNES,
+    V4_HISTORICAL_COMMUNE_PATH,
+    V4_LATEST_COMMUNES_PATH,
+    V4_COMMUNES,
 )
+
 from coronapi.helpers.get_data import (
     get_national_data,
     get_regional_data,
     get_communes_data,
     get_regional_template,
+    get_commune_by_all_regions,
 )
-
 
 bp = Blueprint("api", __name__, url_prefix="/api")
 CORS(bp)
@@ -63,15 +67,17 @@ def v3_historical_communes():
     if "id" in request.args:
         id = int(request.args["id"])
         try:
+            del data[id]["communeData"]
             return Response(
                 json.dumps(data[id], ensure_ascii=False),
                 content_type="application/json; charset=utf-8",
             )
         except KeyError:
             return abort(404, description=NOT_FOUND_COMMUNE_ERROR)
-
+    for key in data:
+        del data[key]["communeData"]
     return Response(
-        json.dumps(get_communes_data(), ensure_ascii=False),
+        json.dumps(data, ensure_ascii=False),
         content_type="application/json; charset=utf-8",
     )
 
@@ -114,6 +120,7 @@ def v3_communes_latest():
     data = get_communes_data()
 
     for key in data:
+        del data[key]["communeData"]
         max_subkey = max(data[key]["confirmed"].keys())
         data[key]["confirmed"] = {max_subkey: data[key]["confirmed"][max_subkey]}
     if "id" in request.args:
@@ -141,7 +148,7 @@ def v3_models_regions():
     for key in data:
         data_dict.update({key: {"region": data[key]["region"]}})
         for attr, val in data[key]["regionInfo"].items():
-            if attr in ["population", "area", "lat", "long", "hdi"]:
+            if attr in ["_id", "population", "area", "lat", "long", "hdi"]:
                 data_dict[key][attr] = val
     return Response(
         json.dumps(data_dict, ensure_ascii=False),
@@ -159,13 +166,119 @@ def v3_models_communes():
                 key: {
                     "commune": data[key]["commune"],
                     "region": data[key]["communeInfo"]["region"],
+                    "region_code": data[key]["communeInfo"]["region_code"],
                 }
             }
         )
         for attr, val in data[key]["communeInfo"].items():
-            if attr in ["population", "area", "hdi"]:
+            if attr in ["_id", "population", "area", "hdi"]:
                 data_dict[key][attr] = val
     return Response(
         json.dumps(data_dict, ensure_ascii=False),
         content_type="application/json; charset=utf-8",
     )
+#####################################
+#              V4                   #
+#####################################
+
+
+@bp.route(V4_HISTORICAL_COMMUNE_PATH, methods=["GET"])
+def v4_historical_communes():
+    if "id" in request.args:
+        id = int(request.args["id"])
+        data = get_communes_data()
+        try:
+            del data[id]["confirmed"]
+            return Response(
+                json.dumps(data[id], ensure_ascii=False),
+                content_type="application/json; charset=utf-8",
+            )
+        except KeyError:
+            return abort(404, description=NOT_FOUND_COMMUNE_ERROR)
+
+    data = get_commune_by_all_regions()
+
+    if "region_code" in request.args:
+        region_code = int(request.args["region_code"])
+        try:
+            data = data[region_code]
+        except KeyError:
+            return abort(404, description=NOT_FOUND_REGION_ERROR)
+
+    return Response(
+        json.dumps(data, ensure_ascii=False),
+        content_type="application/json; charset=utf-8",
+    )
+
+
+@bp.route(V4_LATEST_COMMUNES_PATH, methods=["GET"])
+def v4_communes_latest():
+    if "id" in request.args:
+        id = int(request.args["id"])
+
+        data = get_communes_data()
+
+        for region_code in data:
+            del data[region_code]["confirmed"]
+            max_subkey = max(data[region_code]["communeData"].keys())
+            data[region_code]["communeData"] = {max_subkey: data[region_code]["communeData"][max_subkey]}
+        try:
+            return Response(
+                json.dumps(data[id], ensure_ascii=False),
+                content_type="application/json; charset=utf-8",
+            )
+        except KeyError:
+            return abort(404, description=NOT_FOUND_COMMUNE_ERROR)
+
+    data = get_commune_by_all_regions()
+    if "region_code" in request.args:
+        region_code = int(request.args["region_code"])
+        try:
+            region = data[region_code]
+        except KeyError:
+            return abort(404, description=NOT_FOUND_REGION_ERROR)
+
+        for key in region:
+            max_subkey = max(data[region_code][key]["communeData"].keys())
+            data[region_code][key]["communeData"] = {max_subkey: data[region_code][key]["communeData"][max_subkey]}
+
+        data = data[region_code]
+
+    else:
+        for region in data:
+            for key in data[region]:
+                max_subkey = max(data[region][key]["communeData"].keys())
+                data[region][key]["communeData"] = {max_subkey: data[region][key]["communeData"][max_subkey]}
+
+    return Response(
+        json.dumps(data, ensure_ascii=False),
+        content_type="application/json; charset=utf-8",
+    )
+
+
+@bp.route(V4_COMMUNES, methods=["GET"])
+def v4_models_communes():
+    data = get_commune_by_all_regions()
+    data_dict = dict()
+
+    for region_code in data:
+        data_dict.update({region_code: {}})
+        for id in data[region_code]:
+            data_dict[region_code].update(
+                {
+                    id: {
+                        "commune": data[region_code][id]["commune"],
+                        "region": data[region_code][id]["communeInfo"]["region"],
+                        "region_code": data[region_code][id]["communeInfo"]["region_code"]
+                    }
+                }
+            )
+            for attr, val in data[region_code][id]["communeInfo"].items():
+                if attr in ["_id", "population", "area", "hdi"]:
+                    data_dict[region_code][id][attr] = val
+
+    return Response(
+        json.dumps(data_dict, ensure_ascii=False),
+        content_type="application/json; charset=utf-8",
+    )
+

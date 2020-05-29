@@ -1,6 +1,6 @@
 # Errors
-NOT_FOUND_REGION_ERROR = "Region not found. Please enter a value between 1 and 16."
-NOT_FOUND_COMMUNE_ERROR = "Commune not found. Please visit https://chile-coronapi.herokuapp.com/api/v3/models/communes for more information."
+NOT_FOUND_REGION_ERROR = "Region not found. Please visit https://chile-coronapi.herokuapp.com/api/v3/models/regions for more information."
+NOT_FOUND_COMMUNE_ERROR = "Commune not found. Please visit https://chile-coronapi.herokuapp.com/api/v4/models/communes for more information."
 
 # URLs
 NATIONAL_URL = "https://raw.githubusercontent.com/jorgeperezrojas/covid19-data/master/csv/resumen_nacional.csv"
@@ -21,6 +21,19 @@ V3_LATEST_COMMUNES_PATH = "v3/latest/communes"
 # Models Paths
 V3_REGIONS = "v3/models/regions"
 V3_COMMUNES = "v3/models/communes"
+
+##################
+#      v4        #
+##################
+
+# Historical Paths
+V4_HISTORICAL_COMMUNE_PATH = "v4/historical/communes"
+
+# Latest Paths
+V4_LATEST_COMMUNES_PATH = "v4/latest/communes"
+
+# Models Paths
+V4_COMMUNES = "v4/models/communes"
 
 # Project
 DATA_FOLDER = "coronapi/data"
