@@ -14,6 +14,7 @@ from coronapi.helpers.utils import (
     per_100k,
     get_regional_template,
     get_communal_template,
+    per_million
 )
 
 
@@ -40,6 +41,7 @@ def get_regional_data():
                     key: {
                         "confirmed": confirmed,
                         "confirmed_per_100k": per_100k(confirmed, population),
+                        "confirmed_per_million": per_million(confirmed, population),
                     }
                 }
             )
@@ -47,7 +49,11 @@ def get_regional_data():
         for key in deaths_row:
             deaths = int(deaths_row[key])
             region_data[key].update(
-                {"deaths": deaths, "deaths_per_100k": per_100k(deaths, population)}
+                {
+                    "deaths": deaths,
+                    "deaths_per_100k": per_100k(deaths, population),
+                    "deaths_per_million": per_million(deaths, population),
+                }
             )
 
         data[region_id]["regionData"] = region_data
@@ -60,18 +66,25 @@ def get_national_data():
     data = csv.DictReader(parsed_response, delimiter=",")
     data_dict = dict()
     for element in data:
-        element["confirmed"] = element.pop("confirmados")
+        element["confirmed"] = int(element.pop("confirmados"))
         element["day"] = element.pop("dia")
-        element["deaths"] = element.pop("muertes")
+        element["deaths"] = int(element.pop("muertes"))
         element["confirmed_per_100k"] = per_100k(
+            int(element["confirmed"]), INE_CHILEAN_HABITANTS
+        )
+        element["confirmed_per_million"] = per_million(
             int(element["confirmed"]), INE_CHILEAN_HABITANTS
         )
         element["deaths_per_100k"] = per_100k(
             int(element["deaths"]), INE_CHILEAN_HABITANTS
         )
+        element["deaths_per_million"] = per_million(
+            int(element["deaths"]), INE_CHILEAN_HABITANTS
+        )
         data_dict.update({element["day"]: element})
     return data_dict
 
+#TODO eliminar el confirmed al pasar a v4 y deprecar v3
 
 def get_communes_data():
     response = requests.request("GET", COMMUNES_URL)
@@ -79,6 +92,7 @@ def get_communes_data():
     data = list(csv.DictReader(parsed_response, delimiter=","))
     dict_data = dict()
     data_communes = get_communal_template()
+
     for element in data:
         commune_info = {
             "region": element.pop("region"),
@@ -90,20 +104,76 @@ def get_communes_data():
             if key == "hdi":
                 commune_info[key] = round(val, 3)
         commune = element.pop("comuna")
-        confirmed = copy.deepcopy(element)
+        confirmed_per_commune = copy.deepcopy(element)
 
-        for key in confirmed:
-            if confirmed[key] == "-":
-                confirmed[key] = 0
+        commune_data = dict()
+
+        for key in confirmed_per_commune:
+            if confirmed_per_commune[key] == "-":
+                commune_data[key] = {
+                    "confirmed": 0,
+                }
+                confirmed_per_commune[key] = 0
             else:
-                confirmed[key] = int(confirmed[key].replace(",", "").replace(".", ""))
+                commune_data[key] = {
+                    "confirmed": int(confirmed_per_commune[key].replace(",", "").replace(".", "")),
+                }
+                confirmed_per_commune[key] = int(confirmed_per_commune[key].replace(",", "").replace(".", ""))
 
         dict_data.update(
             {
                 commune_info["_id"]: {
                     "communeInfo": commune_info,
                     "commune": commune,
-                    "confirmed": confirmed,
+                    "confirmed": confirmed_per_commune,
+                    "communeData": commune_data,
+                }
+            }
+        )
+
+    return dict_data
+
+
+def get_commune_by_all_regions():
+    response = requests.request("GET", COMMUNES_URL)
+    parsed_response = io.StringIO(response.content.decode("utf-8"))
+    data = list(csv.DictReader(parsed_response, delimiter=","))
+    dict_data = dict()
+    for i in range(1, 17):
+        dict_data[i] = dict()
+    data_communes = get_communal_template()
+    for element in data:
+        id_region = int(element.pop("codigo_region"))
+        commune_info = {
+            "region": element.pop("region"),
+            "region_code": id_region,
+            "_id": int(element.pop("codigo_comuna")),
+        }
+        for key, val in data_communes[str(commune_info["_id"])].items():
+            commune_info[key] = val
+            if key == "hdi":
+                commune_info[key] = round(val, 3)
+        commune = element.pop("comuna")
+        confirmed_per_commune = copy.deepcopy(element)
+
+        commune_data = dict()
+
+        for key in confirmed_per_commune:
+            if confirmed_per_commune[key] == "-":
+                commune_data[key] = {
+                    "confirmed": 0,
+                }
+            else:
+                commune_data[key] = {
+                    "confirmed": int(confirmed_per_commune[key].replace(",", "").replace(".", "")),
+                }
+
+        dict_data[id_region].update(
+            {
+                commune_info["_id"]: {
+                    "communeInfo": commune_info,
+                    "commune": commune,
+                    "communeData": commune_data,
                 }
             }
         )
