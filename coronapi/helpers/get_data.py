@@ -14,7 +14,7 @@ from coronapi.helpers.utils import (
     per_100k,
     get_regional_template,
     get_communal_template,
-    per_million
+    per_million,
 )
 
 
@@ -29,6 +29,8 @@ def get_regional_data():
 
     for confirmed_row, deaths_row in zip(confirmed_reader, deaths_reader):
         region_id = confirmed_row["codigo"]
+        if region_id == "0":
+            continue
         del confirmed_row["codigo"], confirmed_row["region"]
         del deaths_row["codigo"], deaths_row["region"]
         population = data[region_id]["regionInfo"]["population"]
@@ -84,7 +86,9 @@ def get_national_data():
         data_dict.update({element["day"]: element})
     return data_dict
 
-#TODO eliminar el confirmed al pasar a v4 y deprecar v3
+
+# TODO eliminar el confirmed al pasar a v4 y deprecar v3
+
 
 def get_communes_data():
     response = requests.request("GET", COMMUNES_URL)
@@ -116,9 +120,13 @@ def get_communes_data():
                 confirmed_per_commune[key] = 0
             else:
                 commune_data[key] = {
-                    "confirmed": int(confirmed_per_commune[key].replace(",", "").replace(".", "")),
+                    "confirmed": int(
+                        confirmed_per_commune[key].replace(",", "").replace(".", "")
+                    ),
                 }
-                confirmed_per_commune[key] = int(confirmed_per_commune[key].replace(",", "").replace(".", ""))
+                confirmed_per_commune[key] = int(
+                    confirmed_per_commune[key].replace(",", "").replace(".", "")
+                )
 
         dict_data.update(
             {
@@ -165,7 +173,9 @@ def get_commune_by_all_regions():
                 }
             else:
                 commune_data[key] = {
-                    "confirmed": int(confirmed_per_commune[key].replace(",", "").replace(".", "")),
+                    "confirmed": int(
+                        confirmed_per_commune[key].replace(",", "").replace(".", "")
+                    ),
                 }
 
         dict_data[id_region].update(
