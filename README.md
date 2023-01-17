@@ -1,5 +1,7 @@
 # chile-coronapi
 
+Actualmente este proyecto no está activo. Sin embargo, puede servir en caso de que se quiera revisar cómo implementar una API usando `flask`; cómo crear un scrapper con `BeautyfulSoup` y cómo documentar una API de forma sencilla.
+
 API para obtener datos acerca de contagios de coronavirus (COVID-19) en Chile. Utiliza los datos oficiales del Gobierno de Chile y el Ministerio de Salud. Los datos se manejan en el repositorio hermano [covid19-data](https://github.com/jorgeperezrojas/covid19-data) y se actualizan prácticamente en tiempo real. Para más información, revisar otros datos interesantes sobre el coronavirus en Chile o revisar cómo se realiza el scraping, referir a ese repositorio.
 
 ## IMPORTANTE
