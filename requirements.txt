@@ -12,7 +12,7 @@ decorator==4.4.2
 entrypoints==0.3
 flake8==3.7.9
 flake8-black==0.1.1
-Flask==1.1.1
+Flask==2.3.2
 Flask-Cors==3.0.9
 gunicorn==20.0.4
 idna==2.9
